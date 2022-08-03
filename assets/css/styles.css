@@ -560,6 +560,17 @@ textarea{
     transform:scale(1.006);
 }
 
+/* RESUME STYLES */
+
+.section-subtitle-resume{
+    font-size: clamp(2rem, 2vw, 3rem);
+}
+
+.pdfobject-container { 
+    height: 50rem; 
+    border: 1rem solid #E8FFF5; 
+}
+
 /* !CONTACT STYLES */
 .input{
     position: relative;

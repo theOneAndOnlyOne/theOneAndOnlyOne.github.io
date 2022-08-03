@@ -58,3 +58,13 @@ sr.reveal('.section-title, .section-subtitle-container', {
 sr.reveal('.portfolio-card', {interval:500});
 sr.reveal('.form-container, .footer', {
     origin:'top'});
+
+// !EMAIL TO CLIPBOARD
+
+function emailToClipboard(){
+
+    navigator.clipboard.writeText("joshgonzales9891@gmail.com");
+
+    /* Alert the copied text */
+    alert("Copied to clipboard!");
+}
