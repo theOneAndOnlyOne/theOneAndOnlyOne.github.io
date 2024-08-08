@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Color Ramp Shader Example</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Set up scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create custom shader material
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                colorA: { value: new THREE.Color('blue') },
+                colorB: { value: new THREE.Color('red') },
+                threshold: { value: 0.5 }
+            },
+            vertexShader: `
+                varying vec3 vNormal;
+
+                void main() {
+                    vNormal = normalize(normalMatrix * normal);
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 colorA;
+                uniform vec3 colorB;
+                uniform float threshold;
+
+                varying vec3 vNormal;
+
+                void main() {
+                    float intensity = dot(vNormal, vec3(0.0, 0.0, 1.0));
+                    vec3 color = mix(colorA, colorB, smoothstep(threshold - 0.1, threshold + 0.1, intensity));
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `
+        });
+
+        // Create a sphere with the custom material
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // Position camera
+        camera.position.z = 5;
+
+        // Add a light
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(0, 0, 10);
+        scene.add(light);
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate the sphere
+            sphere.rotation.x += 0.01;
+            sphere.rotation.y += 0.01;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resizing
+        window.addEventListener('resize', onWindowResize, false);
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    </script>
+</body>
+</html>
